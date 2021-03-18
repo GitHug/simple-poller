@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: SimplePoller
+  description: Application for polling websites to check if they are up.
+  contact:
+    name: Fredrik Mäkilä
+
+servers:
+  - url: localhost:8080
+
+tags:
+  - name: static
+    description: Static
+  - name: services
+    description: Services
+
+paths:
+  /*:
+    get:
+      summary: Get static content
+      description: Provides the HTML in the webroot directory
+      operationId: getStatic
+      tags:
+        - static
+      responses:
+        "200":
+          description: Ok
+
+  /services:
+    get:
+      summary: Get all services
+      description: Return a list of all services currently being polled.
+      operationId: getServices
+      tags:
+        - services
+      responses:
+        "200":
+          description: A list of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+    post:
+      summary: Create a service
+      description: Add a new service to the list of services being polled.
+      operationId: createService
+      tags:
+        - services
+      requestBody:
+        $ref: "#/components/requestBodies/ServiceBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "400":
+          description: "Bad request"
+
+  /services/{id}:
+    get:
+      summary: Get a service
+      description: Get information on a single service
+      operationId: getService
+      tags:
+        - services
+      parameters:
+        - $ref: "#/components/parameters/serviceIdParam"
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "404":
+          description: Not found
+        "400":
+          description: Bad request
+
+    delete:
+      summary: Delete a service
+      description: Delete a service that should no longer be polled.
+      operationId: deleteService
+      tags:
+        - services
+      parameters:
+        - $ref: "#/components/parameters/serviceIdParam"
+      responses:
+        "200":
+          description: Service deleted
+        "404":
+          description: Not found
+        "400":
+          description: Invalid id
+
+components:
+  parameters:
+    serviceIdParam:
+      in: path
+      name: id
+      schema:
+        type: integer
+      required: true
+      description: The id of a service
+
+  requestBodies:
+    ServiceBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                nullable: true
+                maxLength: 255
+              url:
+                type: string
+                format: uri
+                maxLength: 255
+            required:
+              - url
+
+  schemas:
+    Service:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: datetime
+        id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+        updated_at:
+          type: string
+          format: datetime
+        url:
+          type: string

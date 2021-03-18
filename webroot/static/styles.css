@@ -1,0 +1,9 @@
+html, body {
+    width: 100%;
+    margin: auto;
+}
+
+table {
+    margin-top: 25px;
+    width: 100%;
+}
